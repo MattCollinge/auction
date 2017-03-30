@@ -1,0 +1,82 @@
+swagger: "2.0"
+info:
+  version: "0.0.1"
+  title: auction
+  description: reverse auction API
+  contact:
+    name: Matt Collinge
+    url: https://github.com/mattcollinge/auction
+    email: matt.collinge@gmail.com
+host: localhost:3000
+basePath: /
+schemes:
+  - http
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /auctions/auctionId/{auctionId}:
+    x-swagger-router-controller: auctions
+    get:
+      description: Returns the auction given by the auctionId
+      operationId: auctionByAuctionId
+      parameters:
+        - $ref: '#/parameters/auctionId'
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/AuctionResponse"
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorised
+        404:
+          description: No Auction Found
+        default:
+          description: Unexpected Error
+  /private/ping:
+    x-swagger-router-controller: healthCheck
+    get:
+      operationId: ping
+      description: Returns a `pong` message for system health checking
+      produces:
+        - text/html
+      responses:
+        200:
+          description: Successful response
+          schema:
+            $ref: '#/definitions/PongModel'
+  /swagger:
+    x-swagger-pipe: swagger_raw
+
+
+parameters:
+  auctionId:
+    name: auctionId
+    in: path
+    description: the auctionId of an Auction
+    required: true
+    type: string
+  
+definitions:
+  AuctionModel:
+    type: object
+    description: this is the format of a Auction object
+    required:
+      - auctionId
+      - auctionItem
+    properties:
+      auctionId:
+        type: string
+      auctionItem:
+        type: string
+  AuctionResponse:
+    type: array
+    items:
+      $ref: '#/definitions/AuctionModel'
+  PongModel:
+    type: string
+    description: The result of a private ping healthcheck request
